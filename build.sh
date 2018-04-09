@@ -1,0 +1,12 @@
+c++ --std=c++14 main.cpp obj/*.cpp -I/usr/local/include/mongocxx/v_noabi \
+  -I/usr/local/include/bsoncxx/v_noabi \
+  -L/usr/local/lib \
+  -lmongocxx -lbsoncxx \
+  -lboost_system -lboost_log-mt \
+  -lboost_coroutine -lboost_context-mt \
+  -lboost_chrono -lboost_thread-mt \
+  -lpthread \
+  -lrestc-cpp \
+  -isystem /usr/local/opt/boost \
+  -L/usr/local/opt/openssl/lib -I/usr/local/opt/openssl/include \
+  -lz -lssl -lcrypto
