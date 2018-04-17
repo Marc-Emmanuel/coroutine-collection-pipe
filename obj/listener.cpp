@@ -8,10 +8,10 @@ Listener::Listener(std::string n){
     name = n;
 }
 
-void Listener::OnEvent(){
+void Listener::onEvent(){
     std::cout << "[" << name << "]: Received event" << std::endl;
 }
 
-void Listener::OnEvent(std::string mess){
+void Listener::onEvent(std::string mess){
     std::cout <<"[" << name << "]: Received event - " << mess << std::endl; 
 }

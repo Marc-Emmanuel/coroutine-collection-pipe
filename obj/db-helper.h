@@ -17,16 +17,18 @@ class DbHelper {
 public:
     DbHelper(); //default
     DbHelper(std::string, std::string, std::string); //host:port , dbname
-    void SetCollection(std::string);
-    void Insert(std::string);
-    const std::string ToString();
-    const std::vector<std::string>GetAllDocuments();
+    void setCollection(std::string);
+    void insert(std::string);
+    const std::string toString();
+    const std::vector<std::string>getAllDocuments();
+    const int count();
 private:
     std::string host;
     std::string db_name;
     int port;
     std::string collectionName;
+    int doc_number;
     mongocxx::v_noabi::collection collection;
-    mongocxx::instance inst{};
-    mongocxx::client conn{mongocxx::uri{}};
+    mongocxx::client conn;
+    mongocxx::uri uri;
 };

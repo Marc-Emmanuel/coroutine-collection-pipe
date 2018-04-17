@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+//#include <thread>         // std::this_thread::sleep_for
+//#include <chrono>
 #include <boost/lexical_cast.hpp>
 #include <boost/fusion/adapted.hpp>
 #include <boost/log/trivial.hpp>
@@ -17,20 +19,21 @@ private:
     std::string url;
     int frequency;
     pthread_t inner_thread;
-    Listener listener;
+    Listener * listener;
     static void* InnerRun(void*);
-    bool run = false;
+    bool isRunning = false;
 public:
     Collector();
     Collector(std::string, int);
-    std::string Get(restc_cpp::Context&);
-    void SetListener(Listener);
-    Listener GetListener() const;
-    void SetFrequency(int);
-    int GetFrequency() const;
-    std::string GetUrl() const;
-    void SetUrl(std::string);
-    bool GetReadyToRun()const;
-    pthread_t Run();
-    void Stop(bool);
+    Collector(std::string, int, Listener *);
+    std::string get(restc_cpp::Context&);
+    void setListener(Listener * );
+    Listener * getListener() const;
+    void setFrequency(int);
+    int getFrequency() const;
+    std::string getUrl() const;
+    void setUrl(std::string);
+    bool getReadyToRun()const;
+    pthread_t run();
+    void stop(bool);
 };

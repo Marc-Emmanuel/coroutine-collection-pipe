@@ -9,6 +9,6 @@ private:
 public:
     Listener();
     Listener(std::string);
-    void OnEvent();
-    void OnEvent(std::string);
+    virtual void onEvent();
+    virtual void onEvent(std::string);
 };

@@ -17,6 +17,7 @@
 #include "obj/db-helper.h"
 #include "obj/collector.h"
 #include "obj/listener.h"
+#include "obj/special-listener.h"
 
 using namespace std;
 using namespace restc_cpp;
@@ -28,13 +29,14 @@ int main() {
                 logging::trivial::severity >= logging::trivial::info
         );
 
-        DbHelper helper;
-        cout << "Helper: " << helper.ToString() <<endl;
+        DbHelper * helper = new DbHelper();
+        cout << "Helper: " << helper->toString() <<endl;
 
-        Listener listener("Test listener");
+        //Listener * listener("Test listener");
+        Listener * spListener = new SpecialListener("Insert Listener", helper);
         Collector testCollector;
-        testCollector.SetListener(listener);
-        pthread_t t = testCollector.Run();
+        testCollector.setListener(spListener);
+        pthread_t t = testCollector.run();
         cout << "Waiting for Collector to be destroyed" << endl;
         pthread_join(t, NULL);
 
