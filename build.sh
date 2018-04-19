@@ -1,4 +1,4 @@
-c++ --std=c++14 main.cpp obj/*.cpp -I/usr/local/include/mongocxx/v_noabi \
+c++ -o coroutine-collector-pipe --std=c++14 main.cpp obj/*.cpp -I/usr/local/include/mongocxx/v_noabi \
   -I/usr/local/include/bsoncxx/v_noabi \
   -L/usr/local/lib \
   -lmongocxx -lbsoncxx \

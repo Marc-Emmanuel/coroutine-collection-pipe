@@ -24,21 +24,32 @@ using namespace restc_cpp;
 namespace logging = boost::log;
 
 int main() {
+        //Have to be called only once!
+        mongocxx::instance inst{};
+
         logging::core::get()->set_filter
         (
                 logging::trivial::severity >= logging::trivial::info
         );
 
         DbHelper * helper = new DbHelper();
-        cout << "Helper: " << helper->toString() <<endl;
-
-        //Listener * listener("Test listener");
+        DbHelper * weatherHelper = new DbHelper("mongodb://localhost", "testdb","weather_data");
+        helper->log();
+        
         Listener * spListener = new SpecialListener("Insert Listener", helper);
+        Listener * weatherDataReceiver = new SpecialListener("WeatherData Listener", weatherHelper);
         Collector testCollector;
         testCollector.setListener(spListener);
-        pthread_t t = testCollector.run();
-        cout << "Waiting for Collector to be destroyed" << endl;
-        pthread_join(t, NULL);
+
+        Collector weatherCollector("http://api.openweathermap.org/data/2.5/weather?q=Paris,fr&appid=your-app-id", 30*1000*1000, weatherDataReceiver);
+    
+        weatherCollector.run();
+        testCollector.run();
+        cout << "[Collector::join]: " << "waiting for Collector to be destroyed" << endl;
+        cout << "[Collector::join]: " << "waiting for WeatherCollector to be destroyed" << endl;
+        weatherCollector.join();
+        testCollector.join();
+        //pthread_join(t, NULL);
 
 
         // auto rest_client = RestClient::Create();

@@ -8,7 +8,8 @@ public:
     SpecialListener(std::string, DbHelper *);
     virtual void onEvent();
     virtual void onEvent(std::string);
-    void log();
+    virtual void log();
+    virtual void log(std::string);
 private:
     DbHelper * helper;
 };

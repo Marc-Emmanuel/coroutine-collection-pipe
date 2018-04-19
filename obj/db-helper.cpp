@@ -6,7 +6,6 @@ DbHelper::DbHelper(){
     db_name = "testdb";
     port=27017;
     collectionName = "collection";
-    mongocxx::instance inst{};
     uri = mongocxx::uri(host+":"+std::to_string(port));
     conn = mongocxx::client(uri);
     collection = conn[db_name][collectionName];
@@ -14,7 +13,7 @@ DbHelper::DbHelper(){
 }
 
 DbHelper::DbHelper(std::string _host, std::string _db, std::string _collection){
-    _host = host;
+    host = _host;
     db_name = _db;
     port = 27017; // If defaut;
     collectionName = _collection;
@@ -33,13 +32,20 @@ void DbHelper::setCollection(std::string name){
     std::cout <<"[DbHelper::setCollection]: " << this->db_name << "/" << this->collectionName << std::endl; 
     #endif
 }
+
+std::string DbHelper::getCollectionName() const{
+    return this->collectionName;
+}
 //Insert
 void DbHelper::insert(std::string obj){
     bsoncxx::document::value doc_value = bsoncxx::from_json(obj);
     this->collection.insert_one(doc_value.view());
     this->count();
     #ifdef DEBUG
+    this->log();
+    #ifdef DUMPOBJ
     std::cout << "[DbHelper::insert]: " << obj << std::endl;
+    #endif
     #endif
 }
 
@@ -69,4 +75,8 @@ const int DbHelper::count(){
     }
     doc_number = n;
     return n;
+}
+
+void DbHelper::log(){
+    std::cout << "[DbHelper::log]: " << this->toString() << std::endl;
 }

@@ -9,9 +9,11 @@
 #include <boost/fusion/adapted.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup.hpp>
+#include <boost/algorithm/string.hpp>
 #include <restc-cpp/restc-cpp.h>
 #include <restc-cpp/RequestBuilder.h>
 #include <pthread.h>
+#include <map>
 #include "listener.h"
 
 class Collector {
@@ -22,6 +24,8 @@ private:
     Listener * listener;
     static void* InnerRun(void*);
     bool isRunning = false;
+    std::map<std::string, std::string> requestParameters;
+    void parseUrl();
 public:
     Collector();
     Collector(std::string, int);
@@ -33,7 +37,8 @@ public:
     int getFrequency() const;
     std::string getUrl() const;
     void setUrl(std::string);
-    bool getReadyToRun()const;
+    bool shouldRun()const;
     pthread_t run();
+    void join();
     void stop(bool);
 };

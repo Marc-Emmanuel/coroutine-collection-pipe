@@ -14,9 +14,13 @@ void SpecialListener::onEvent(){
 
 void SpecialListener::onEvent(std::string mess){
     helper->insert(mess);
-    //this->log();
+    this->log("Inserted in " + helper->getCollectionName());
 }
 
 void SpecialListener::log(){
-    helper->toString();
+    std::cout <<"[" << name << "]" << std::endl;
+}
+
+void SpecialListener::log(std::string m){
+    std::cout <<"[" << name << "]: " << m << std::endl;
 }

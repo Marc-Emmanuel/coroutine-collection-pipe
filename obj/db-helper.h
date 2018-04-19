@@ -16,12 +16,14 @@
 class DbHelper {
 public:
     DbHelper(); //default
-    DbHelper(std::string, std::string, std::string); //host:port , dbname
+    DbHelper(std::string, std::string, std::string); //host:port , dbname, collection
     void setCollection(std::string);
     void insert(std::string);
     const std::string toString();
+    std::string getCollectionName() const;
     const std::vector<std::string>getAllDocuments();
     const int count();
+    void log();
 private:
     std::string host;
     std::string db_name;

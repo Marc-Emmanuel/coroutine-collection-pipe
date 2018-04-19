@@ -15,3 +15,11 @@ void Listener::onEvent(){
 void Listener::onEvent(std::string mess){
     std::cout <<"[" << name << "]: Received event - " << mess << std::endl; 
 }
+
+void Listener::log(){
+    std::cout <<"[" << name << "]" << std::endl;
+}
+
+void Listener::log(std::string m){
+    std::cout <<"[" << name << "]: " << m << std::endl;
+}
