@@ -13,8 +13,12 @@ void SpecialListener::onEvent(){
 }
 
 void SpecialListener::onEvent(std::string mess){
-    helper->insert(mess);
-    this->log("Inserted in " + helper->getCollectionName());
+    std::string emptyObj = "{}";
+    if(emptyObj.compare(mess)!=0){
+        helper->insert(mess);
+        this->log("Inserted in " + helper->getCollectionName());
+    }
+    
 }
 
 void SpecialListener::log(){

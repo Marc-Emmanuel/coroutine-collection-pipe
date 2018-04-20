@@ -43,11 +43,12 @@ Collector::Collector(std::string u, int freq, Listener * list){
 void Collector::parseUrl(){
     size_t pos = 0;
     std::string delimiter = "?";
-    std::string urlParams;
-    std::vector<std::string> parameterPairs;
-
+    
     //remove what is before the first ?
-    urlParams = this->url.substr(this->url.find(delimiter) + delimiter.length());
+    std::string urlParams = this->url.substr(this->url.find(delimiter) + delimiter.length());;
+    std::vector<std::string> parameterPairs;
+     //Clear map in case Collector is being reused:
+    requestParameters.clear();
     
     if(this->url.compare(urlParams) == 0){
         //If no parameters, exit
@@ -55,11 +56,10 @@ void Collector::parseUrl(){
     }
     
     this->url = this->url.substr(0, this->url.find(delimiter));
+    
     //Extract parameters
     boost::split(parameterPairs, urlParams, boost::is_any_of("&"));
-    
-    //Clear map in case Collector is being reused:
-    requestParameters.clear();
+    //Store request parameters in the parameters Map
     for(std::vector<std::string>::size_type i = 0; i != parameterPairs.size(); i++) {
         std::vector<std::string> param;
         boost::split(param, parameterPairs[i], boost::is_any_of("="));
@@ -67,6 +67,7 @@ void Collector::parseUrl(){
         requestParameters[param[t]]=param[t+1];
     }
     
+    //log purpose
     #ifdef DUMPOBJ
     std::map<std::string, std::string>::iterator it;
     for ( it = requestParameters.begin(); it != requestParameters.end(); it++ ){
@@ -89,11 +90,17 @@ std::string Collector::get(restc_cpp::Context& ctx){
             r->Argument(it->first, it->second);   // Key, Value 
         }
     }
-    
-    auto reply = r->Execute();
-    delete r;
-    r = NULL;
-    s = reply->GetBodyAsString();
+    try{
+        auto reply = r->Execute();
+        delete r;
+        r = NULL;
+        s = reply->GetBodyAsString();
+    } catch(const std::exception& ex){
+        #ifdef DEBUG
+        std::cout << "[Collector::get]: "<< ex.what() << " has been caught, sending empty object {}" << std::endl;
+        #endif
+        s="{}";
+    }
     return s;
 }
 
@@ -144,8 +151,8 @@ void* Collector::InnerRun(void* inst){
     while (c->shouldRun()){
         // Call as a co-routine in a worker-thread.
         rest_client->Process([&](restc_cpp::Context& ctx) {
-                std::string json = c->get(ctx);
-                c->getListener()->onEvent(json);
+            std::string json = c->get(ctx);
+            c->getListener()->onEvent(json);
         });
         // if using std::thread lib => std::this_thread::sleep_for(std::chrono::milliseconds(c->getFrequency()));
         usleep(c->getFrequency()); //Micro sec
