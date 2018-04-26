@@ -59,6 +59,7 @@ void Collector::parseUrl(){
     
     //Extract parameters
     boost::split(parameterPairs, urlParams, boost::is_any_of("&"));
+    
     //Store request parameters in the parameters Map
     for(std::vector<std::string>::size_type i = 0; i != parameterPairs.size(); i++) {
         std::vector<std::string> param;
@@ -131,8 +132,9 @@ void Collector::setUrl(std::string u){
     parseUrl(); //New url using the same collector. Will be removed in future work
 }
 
-void Collector::stop(bool stop){
-    isRunning = stop;
+void Collector::stop(){
+    isRunning = false;
+    this->join();
 }
 
 void Collector::join(){

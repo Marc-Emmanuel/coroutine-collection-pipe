@@ -12,4 +12,5 @@ public:
     virtual void log(std::string);
 private:
     DbHelper * helper;
+    std::mutex mtx;
 };

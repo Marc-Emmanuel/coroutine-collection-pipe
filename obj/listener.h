@@ -2,8 +2,11 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <mutex>
 
 class Listener{
+private:
+    std::mutex mtx;
 protected:
     std::string name;
 public:

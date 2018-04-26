@@ -27,17 +27,37 @@ int main() {
      //Have to be called only once!
     mongocxx::instance inst{};
 
+    
+    const int SECONDS = 1000 * 1000;
+    const int weatherApiFreq = 2; //One every too seconds
+    const std::string BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
+    const std::string APPID = "&your-app-id";
+    std::string towns [2] = {"San Francisco, us", "Paris, fr"};
+    int collectorsNumber = 2;
+    Collector * collectors [2];    
+    
+    
     logging::core::get()->set_filter
     (
             logging::trivial::severity >= logging::trivial::info
     );
-        
+    
+    
     DbHelper * weatherHelper = new DbHelper("mongodb://localhost", "testdb","weather_data");
     Listener * weatherDataReceiver = new SpecialListener("WeatherData Listener", weatherHelper);
-    Collector weatherCollector("http://api.openweathermap.org/data/2.5/weather?q=Paris,fr&appid=your-app-id", 1000*1000, weatherDataReceiver);
-    weatherCollector.run();
-    cout << "[Collector::join]: " << "waiting for WeatherCollector to be destroyed" << endl;
-    weatherCollector.join();
+    //Collector weatherCollector("http://api.openweathermap.org/data/2.5/weather?q=San Franc,fr&appid=your-app-id", 2 * SECONDS, weatherDataReceiver);
+    
+    for(int i = 0; i<collectorsNumber; i++){
+        collectors[i] = new Collector(BASE_URL + towns[i] + APPID, weatherApiFreq*collectorsNumber * SECONDS, weatherDataReceiver);
+        collectors[i]->run();
+    }
+    
+    //weatherCollector.run();
+    std::cout << "[Collector::join]: " << "waiting for collectors to be destroyed" << endl;
+    for(int i = 0; i<collectorsNumber; i++){
+        collectors[i]->join();
+    }
+    //weatherCollector.join();
     
     //DbHelper * helper = new DbHelper();
     //helper->log();

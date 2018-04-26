@@ -40,5 +40,5 @@ public:
     bool shouldRun()const;
     pthread_t run();
     void join();
-    void stop(bool);
+    void stop();
 };

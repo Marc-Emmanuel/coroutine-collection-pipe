@@ -9,11 +9,15 @@ Listener::Listener(std::string n){
 }
 
 void Listener::onEvent(){
+    mtx.lock();
     std::cout << "[" << name << "]: Received event" << std::endl;
+    mtx.unlock();
 }
 
 void Listener::onEvent(std::string mess){
+    mtx.lock();
     std::cout <<"[" << name << "]: Received event - " << mess << std::endl; 
+    mtx.unlock();
 }
 
 void Listener::log(){
